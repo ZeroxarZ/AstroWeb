@@ -15,7 +15,7 @@
 
 1. **Cloner le dépôt :**
    ```sh
-   git clone https://github.com/votre-utilisateur/AstroWeb.git
+   git clone https://github.com/ZeroxarZ/AstroWeb.git
    cd AstroWeb
    ```
 2. **Installer les dépendances :**
@@ -43,7 +43,7 @@ Les contributions sont les bienvenues ! Pour proposer une amélioration ou signa
 
 ## Auteurs
 
-- **Votre Nom** - *Développeur principal* - [votre-utilisateur](https://github.com/votre-utilisateur)
+- **ZeroxarZ** - *Développeur principal* - [ZeroxarZ](https://github.com/ZeroxarZ)
 
 ## License
 
