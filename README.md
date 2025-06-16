@@ -53,5 +53,3 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 
 - Merci à la communauté Three.js pour son incroyable travail et son soutien.
 - Un grand merci à tous les contributeurs d'Open Source qui ont aidé à la réalisation de ce projet.
-
-N'oubliez pas de personnaliser l'URL
