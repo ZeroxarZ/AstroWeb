@@ -54,17 +54,4 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 - Merci à la communauté Three.js pour son incroyable travail et son soutien.
 - Un grand merci à tous les contributeurs d'Open Source qui ont aidé à la réalisation de ce projet.
 
-## Structure du projet
-
-AstroWeb/
-├── backend/           # (optionnel, pour une future extension serveur)
-├── frontend/
-│   ├── [index.html](http://_vscodecontentref_/0)     # Page principale
-│   ├── css/
-│   │   └── [index.css](http://_vscodecontentref_/1)  # Styles
-│   └── js/
-│       └── [index.js](http://_vscodecontentref_/2)   # Logique Three.js
-├── LICENSE
-└── [README.md](http://_vscodecontentref_/3)
-
 N'oubliez pas de personnaliser l'URL
