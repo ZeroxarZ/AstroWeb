@@ -1,0 +1,417 @@
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .ui-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(100, 180, 255, 0.8);
+        }
+        
+        .controls-panel {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            pointer-events: auto;
+            z-index: 20;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 5rem;
+            right: 1rem;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            transition: all 0.3s ease;
+            z-index: 20;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .planet-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #64b4ff;
+        }
+        
+        .planet-info {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        
+        .planet-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .planet-data div {
+            padding: 0.3rem;
+            background: rgba(100, 180, 255, 0.1);
+            border-radius: 0.3rem;
+        }
+        
+        .planet-data span {
+            font-weight: 600;
+            color: #64b4ff;
+        }
+        
+        .button {
+            background: rgba(100, 180, 255, 0.2);
+            border: 1px solid rgba(100, 180, 255, 0.5);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 0.3rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            pointer-events: auto;
+        }
+        
+        .button:hover {
+            background: rgba(100, 180, 255, 0.4);
+        }
+        
+        .button.active {
+            background: rgba(100, 180, 255, 0.6);
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(100, 180, 255, 0.5);
+            padding: 0.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 100;
+            transition: opacity 0.2s ease;
+        }
+        
+        .distance-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.5);
+            transform-origin: left center;
+            pointer-events: none;
+        }
+        
+        .distance-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.3rem;
+            border-radius: 0.3rem;
+            font-size: 0.7rem;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .help-button {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(100, 180, 255, 0.2);
+            border: 1px solid rgba(100, 180, 255, 0.5);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.2s ease;
+            z-index: 20;
+        }
+        
+        .help-button:hover {
+            background: rgba(100, 180, 255, 0.4);
+        }
+        
+        .help-panel {
+            position: absolute;
+            bottom: 5rem;
+            right: 1rem;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            font-size: 0.9rem;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+        
+        .help-panel.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .help-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #64b4ff;
+        }
+        
+        .help-content {
+            line-height: 1.4;
+        }
+        
+        .help-content p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .orbital-info {
+            position: absolute;
+            left: 50%;
+            bottom: 1rem;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+        }
+        
+        .orbital-info.visible {
+            opacity: 1;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+        
+        .loading-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #64b4ff;
+            text-shadow: 0 0 10px rgba(100, 180, 255, 0.8);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(100, 180, 255, 0.3);
+            border-top: 3px solid #64b4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .planet-groups {
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .planet-scale-slider {
+            width: 100%;
+            margin: 0.5rem 0;
+            pointer-events: auto;
+        }
+        
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .toggle-switch label {
+            margin-left: 0.5rem;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            pointer-events: auto;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(100, 180, 255, 0.2);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: rgba(100, 180, 255, 0.6);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .date-display {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid rgba(100, 180, 255, 0.3);
+            position: absolute;
+            top: 5rem;
+            left: 1rem;
+            font-size: 0.9rem;
+            z-index: 20;
+        }
+        
+        .planet-category {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #64b4ff;
+        }
+        
+        .planet-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .info-panel {
+                width: 250px;
+                font-size: 0.8rem;
+            }
+            
+            .controls-panel {
+                max-width: 300px;
+            }
+            
+            .button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header > div:last-child {
+                margin-top: 0.5rem;
+                display: flex;
+                flex-wrap: wrap;
+            }
+        }
