@@ -1,4 +1,4 @@
-# AstroWeb
+### AstroWeb
 
 **AstroWeb** est une application web interactive permettant d'explorer le système solaire en 3D grâce à [Three.js](https://threejs.org/). Visualisez les planètes, leurs orbites, mesurez les distances, et découvrez des informations détaillées sur chaque corps céleste.
 
