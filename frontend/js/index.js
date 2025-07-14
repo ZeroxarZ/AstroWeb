@@ -1,4 +1,4 @@
-        // Variables globales
+// Variables globales
         let scene, camera, renderer, controls;
         let planets = {};
         let planetMeshes = {};
@@ -235,6 +235,10 @@
             }
         };
 
+        // === AstronomyAPI credentials ===
+const ASTRONOMY_API_KEY = 'b408f9a8-c670-460b-841c-168ef88775ea';
+const ASTRONOMY_API_SECRET = 'e609ef38fd1d6bc593fe350d49c19ec5204f3e2b2426cb4fe9f80f8b40dd7be3bbe2a73ef906a66e9d03c69bedafbdafbde936bca2e68fbb59fdeb6025f85bc64a0f735b7ab35dc82898df2d33339231af7f8b9da94d60dcc06cd5dcc2ecbc97060980db3b6025575553bd9f4ac8b9a4';
+
         // Initialisation
         init();
         animate();
@@ -338,7 +342,7 @@
             
             // Créer le soleil
             const sunGeometry = new THREE.SphereGeometry(planetData.sun.displayRadius, 64, 64);
-            const sunMaterial = new THREE.MeshBasicMaterial({
+            const sunMaterial = new THREE.MeshPhongMaterial({
                 color: planetData.sun.color,
                 emissive: planetData.sun.emissive,
                 emissiveIntensity: 0.5
@@ -971,10 +975,9 @@
 
         function toggleRealTime(event) {
             realTimeMode = event.target.checked;
-            
+
             if (realTimeMode) {
-                // Calculer les positions réelles actuelles
-                calculateRealPlanetPositions();
+                calculateRealPlanetPositionsAPI();
             }
         }
 
@@ -988,4 +991,49 @@
                 helpPanel.classList.remove('visible');
             }
         }
-(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'950af534c487024b',t:'MTc1MDA4MzczMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+
+async function fetchPlanetPositions(date = new Date()) {
+    const baseUrl = 'https://api.astronomyapi.com/api/v2/bodies/positions';
+    const planets = [
+        'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'
+    ];
+    const dateStr = date.toISOString().split('T')[0];
+    const observer = { latitude: 0, longitude: 0, elevation: 0 };
+    const positions = {};
+
+    for (const planet of planets) {
+        const url = `${baseUrl}/${planet}?latitude=${observer.latitude}&longitude=${observer.longitude}&elevation=${observer.elevation}&from_date=${dateStr}&to_date=${dateStr}&time=00:00:00`;
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': 'Basic ' + btoa(`${ASTRONOMY_API_KEY}:${ASTRONOMY_API_SECRET}`)
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            const pos = data.data.table.rows[0].cells[0].position;
+            // Correction ici : on prend fromSun si dispo, sinon fromEarth
+            let distance = pos.distance.fromSun?.au ?? pos.distance.fromEarth?.au ?? 0;
+            positions[planet] = {
+                distance: distance,
+                angle: pos.ecliptic.lon.decimal
+            };
+        }
+    }
+    return positions;
+}
+
+async function calculateRealPlanetPositionsAPI() {
+    const distanceScale = 10;
+    const now = new Date();
+    const positions = await fetchPlanetPositions(now);
+
+    for (const key in positions) {
+        const mesh = planetMeshes[key];
+        if (!mesh) continue;
+        const { distance, angle } = positions[key];
+        // Convertir l’angle en radians
+        const rad = angle * Math.PI / 180;
+        mesh.position.x = Math.cos(rad) * distance * distanceScale;
+        mesh.position.z = Math.sin(rad) * distance * distanceScale;
+    }
+}
